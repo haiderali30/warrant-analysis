@@ -7,7 +7,11 @@ Original file is located at
     https://colab.research.google.com/drive/1GpXttjMP41quk2UpdHbXtiPv0meHGRA_
 """
 
+!pip install chromadb
+# from langchain.question_answering import VectorDBQA
 !pip install langchain openai cohere tiktoken
+!pip install openai cohere tiktoken chromadb
+!pip install langchain
 import langchain
 import os
 import openai
@@ -28,24 +32,11 @@ len(docouments)
 text_splitter = CharacterTextSplitter(chunk_size = 2283, chunk_overlap=0)
 texts = text_splitter.split_documents(docouments)
 
-os.environ['OPENAI_API_KEY'] = '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'
-
-!pip install chromadb
-
-
-
-# from langchain.embeddings import OpenAIEmbeddings
-# from langchain.vectorstores import Chroma
-# from langchain.question_answering import VectorDBQA
-
+os.environ['OPENAI_API_KEY'] = 'YOUR API HERE'
 embeddings = OpenAIEmbeddings(openai_api_key = os.environ['OPENAI_API_KEY'])
 doc_search = Chroma.from_documents(texts,embeddings)
 chain = VectorDBQA.from_chain_type(llm=OpenAI(), chain_type='stuff', vectorstore=doc_search)
 query = 'your are given a role of a legal professional and attorney, so review all information carefully from the docoument attached and find if there is any discrepancies,inaccuracies or misleading information provided in this PDF. If there is any misleading information present then please provide a legal advice from the blacks law dictionary attached.Reference the Black\'s Law Dictionary for definitions and interpretations if necessary.'
 # query = 'what is this pdf about?'
 chain.run(query)
-
-!pip install openai cohere tiktoken chromadb
-
-!pip install langchain
 
